@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Router} from "@angular/router";
+import { Component, Input } from '@angular/core'
+import { Router } from '@angular/router'
 import { Button } from 'primeng/button'
 
 @Component({
@@ -11,12 +11,12 @@ import { Button } from 'primeng/button'
 })
 export class HeaderComponent {
     @Input() title: string = 'App Title'
-    @Input() route: string = '/'
+    @Input() route: string = ''
     @Input() hasBackButton: boolean = false
 
     constructor(private router: Router) {}
 
     goBack() {
-        this.router.navigateByUrl(this.route).then()
+        this.router.navigateByUrl('/').then()
     }
 }

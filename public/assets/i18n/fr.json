@@ -1,0 +1,10 @@
+{
+  "dashboard": "Tableau de bord",
+  "add": "Ajouter",
+  "date": "Date",
+  "temperature": "Température",
+  "min": "Min",
+  "max": "Max",
+  "rain": "Pluie",
+  "wind": "Vent"
+}
