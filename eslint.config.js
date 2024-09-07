@@ -5,49 +5,57 @@ const angular = require('angular-eslint');
 
 module.exports = tseslint.config(
   {
-    files: ['**/*.ts'],
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
-      'plugin:prettier/recommended',
-    ],
-    processor: angular.processInlineTemplates,
-    rules: {
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
+    "root": true,
+    "overrides": [
+      {
+        "files": ["*.ts"],
+        "parserOptions": {
+          "project": ["tsconfig.json"],
+          "createDefaultProgram": true
         },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
-        },
-      ],
-    },
-  },
-  {
-    files: ['**/*.html'],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-      'plugin:@angular-eslint/template/recommended',
-    ],
-    rules: {},
-  },
-  {
-    files: ['*.html'],
-    excludedFiles: ['*inline-template-*.component.html'],
-    extends: ['plugin:prettier/recommended'],
-    rules: {
-      'prettier/prettier': ['error', { parser: 'angular' }],
-    },
+        "extends": [
+          "plugin:@angular-eslint/recommended",
+          "plugin:@angular-eslint/template/process-inline-templates",
+          "plugin:prettier/recommended"
+        ],
+        "rules": {
+          "@angular-eslint/component-class-suffix": [
+            "error",
+            {
+              "suffixes": ["Page", "Component"]
+            }
+          ],
+          "@angular-eslint/component-selector": [
+            "error",
+            {
+              "type": "element",
+              "prefix": "app",
+              "style": "kebab-case"
+            }
+          ],
+          "@angular-eslint/directive-selector": [
+            "error",
+            {
+              "type": "attribute",
+              "prefix": "app",
+              "style": "camelCase"
+            }
+          ]
+        }
+      },
+      {
+        "files": ["*.html"],
+        "extends": ["plugin:@angular-eslint/template/recommended"],
+        "rules": {}
+      },
+      {
+        "files": ["*.html"],
+        "excludedFiles": ["*inline-template-*.component.html"],
+        "extends": ["plugin:prettier/recommended"],
+        "rules": {
+          "prettier/prettier": ["error", { "parser": "angular" }]
+        }
+      }
+    ]
   }
 );
