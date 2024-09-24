@@ -1,16 +1,18 @@
-<div class="flex justify-between items-center p-2">
-    @if (hasBackButton) {
-        <p-button
-            class="flex-1"
-            icon="pi pi-chevron-left"
-            [rounded]="true"
-            severity="secondary"
-            [text]="true"
-            (click)="goBack()"
-        />
-    } @else {
-        <div class="flex-1"></div>
-    }
-    <span class="flex-1 text-xl text-center font-semibold">{{ title }}</span>
+<div class="h-4rem flex justify-between items-center p-2">
+  @if (hasBackButton) {
+    <p-button
+      class="flex-1"
+      icon="pi pi-chevron-left"
+      [rounded]="true"
+      severity="secondary"
+      [text]="true"
+      (click)="goBack()"
+    />
+  } @else {
     <div class="flex-1"></div>
+  }
+  <span class="flex-1 text-xl text-center font-semibold align-self-center">{{
+    title
+  }}</span>
+  <div class="flex-1"></div>
 </div>

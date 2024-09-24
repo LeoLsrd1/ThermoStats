@@ -25,12 +25,44 @@ export class DataService {
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
-  dataResponseToWeatherData(response: any): WeatherData[] {
+  private dataResponseToWeatherData(response: any): WeatherData[] {
     return response.map((data: any) => {
       return {
         ...data,
         date: new Date(data.date),
       }
     })
+  }
+
+  weatherDataToChartData(data: WeatherData[]): any {
+    return {
+      labels: data.map((data) => data.date.toDateString()),
+      datasets: [
+        {
+          label: 'Min Temp',
+          data: data.map((data) => data.minTemp),
+          fill: false,
+          borderColor: '#42A5F5',
+        },
+        {
+          label: 'Max Temp',
+          data: data.map((data) => data.maxTemp),
+          fill: false,
+          borderColor: '#FFA726',
+        },
+        {
+          label: 'Rain',
+          data: data.map((data) => data.rain),
+          fill: false,
+          borderColor: '#66BB6A',
+        },
+        {
+          label: 'Wind',
+          data: data.map((data) => data.wind),
+          fill: false,
+          borderColor: '#EF5350',
+        },
+      ],
+    }
   }
 }
