@@ -8,38 +8,38 @@ import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 
 @Component({
-    selector: 'app-add',
-    standalone: true,
-    imports: [
-        HeaderComponent,
-        TranslateModule,
-        InputTextModule,
-        KeyFilterModule,
-        CalendarModule,
-        FormsModule,
-    ],
-    templateUrl: './add.component.html',
-    styleUrl: './add.component.css',
+  selector: 'app-add',
+  standalone: true,
+  imports: [
+    HeaderComponent,
+    TranslateModule,
+    InputTextModule,
+    KeyFilterModule,
+    CalendarModule,
+    FormsModule,
+  ],
+  templateUrl: './add.component.html',
+  styleUrl: './add.component.css',
 })
 export class AddComponent {
-    today: Date = new Date()
-    date: Date | undefined
-    minTemp: number | undefined
-    maxTemp: number | undefined
-    rain: number | undefined
-    wind: number | undefined
+  today: Date = new Date()
+  date: Date | undefined
+  minTemp: number | undefined
+  maxTemp: number | undefined
+  rain: number | undefined
+  wind: number | undefined
 
-    constructor(private router: Router) {}
+  constructor(private router: Router) {}
 
-    save() {
-        console.log(
-            'Save',
-            this.date,
-            this.minTemp,
-            this.maxTemp,
-            this.rain,
-            this.wind
-        )
-        this.router.navigateByUrl('/').then()
-    }
+  save() {
+    console.log(
+      'Save',
+      this.date,
+      this.minTemp,
+      this.maxTemp,
+      this.rain,
+      this.wind
+    )
+    this.router.navigateByUrl('/').then()
+  }
 }
