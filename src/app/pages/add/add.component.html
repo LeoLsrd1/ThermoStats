@@ -10,6 +10,7 @@
         dateFormat="dd/mm/yy"
         [maxDate]="today"
         [readonlyInput]="true"
+        (onSelect)="getDateData()"
         [style]="{ width: '100%' }"
       />
     </div>
@@ -62,5 +63,6 @@
     [label]="'save' | translate"
     [style]="{ width: '100%' }"
     (click)="save()"
+    [disabled]="loading"
   />
 </div>
