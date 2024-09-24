@@ -1,57 +1,66 @@
 <app-header [hasBackButton]="true" [title]="'add' | translate"></app-header>
-
-<div class="flex flex-column p-2">
-    <div class="flex-auto mb-4">
-        <label class="font-bold block mb-2"> {{ 'date' | translate }} </label>
-        <p-calendar
-            [(ngModel)]="date"
-            dateFormat="dd/mm/yy"
-            [maxDate]="today"
-            [readonlyInput]="true"
-            [style]="{ width: '100%' }"
-        />
+<div class="fullscreen flex flex-column justify-content-between">
+    <div class="flex flex-column p-2">
+        <div class="flex-auto mb-4">
+            <label class="font-bold block mb-2">
+                {{ 'date' | translate }}
+            </label>
+            <p-calendar
+                [(ngModel)]="date"
+                dateFormat="dd/mm/yy"
+                [maxDate]="today"
+                [readonlyInput]="true"
+                [style]="{ width: '100%' }"
+            />
+        </div>
+        <div class="flex-auto mb-4">
+            <label class="font-bold block mb-2">
+                {{ 'temperature' | translate }}
+            </label>
+            <input
+                pInputText
+                type="number"
+                class="w-full mb-1"
+                [placeholder]="'min' | translate"
+                [(ngModel)]="minTemp"
+            />
+            <input
+                pInputText
+                type="number"
+                class="w-full"
+                [placeholder]="'max' | translate"
+                [(ngModel)]="maxTemp"
+            />
+        </div>
+        <div class="flex-auto mb-4">
+            <label for="rain" class="font-bold block mb-2">
+                {{ 'rain' | translate }}
+            </label>
+            <input
+                pInputText
+                id="rain"
+                type="number"
+                class="w-full"
+                [(ngModel)]="rain"
+            />
+        </div>
+        <div class="flex-auto mb-4">
+            <label for="wind" class="font-bold block mb-2">
+                {{ 'wind' | translate }}
+            </label>
+            <input
+                pInputText
+                id="wind"
+                type="number"
+                class="w-full"
+                [(ngModel)]="wind"
+            />
+        </div>
     </div>
-    <div class="flex-auto mb-4">
-        <label class="font-bold block mb-2">
-            {{ 'temperature' | translate }}
-        </label>
-        <input
-            pInputText
-            type="number"
-            class="w-full mb-1"
-            [placeholder]="'min' | translate"
-            [(ngModel)]="minTemp"
-        />
-        <input
-            pInputText
-            type="number"
-            class="w-full"
-            [placeholder]="'max' | translate"
-            [(ngModel)]="maxTemp"
-        />
-    </div>
-    <div class="flex-auto mb-4">
-        <label for="rain" class="font-bold block mb-2">
-            {{ 'rain' | translate }}
-        </label>
-        <input
-            pInputText
-            id="rain"
-            type="number"
-            class="w-full"
-            [(ngModel)]="rain"
-        />
-    </div>
-    <div class="flex-auto mb-4">
-        <label for="wind" class="font-bold block mb-2">
-            {{ 'wind' | translate }}
-        </label>
-        <input
-            pInputText
-            id="wind"
-            type="number"
-            class="w-full"
-            [(ngModel)]="wind"
-        />
-    </div>
+    <p-button
+        class="m-2"
+        [label]="'save' | translate"
+        [style]="{ width: '100%' }"
+        (click)="save()"
+    />
 </div>

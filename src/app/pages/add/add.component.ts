@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { CalendarModule } from 'primeng/calendar'
 import { FormsModule } from '@angular/forms'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-add',
@@ -27,4 +28,18 @@ export class AddComponent {
     maxTemp: number | undefined
     rain: number | undefined
     wind: number | undefined
+
+    constructor(private router: Router) {}
+
+    save() {
+        console.log(
+            'Save',
+            this.date,
+            this.minTemp,
+            this.maxTemp,
+            this.rain,
+            this.wind
+        )
+        this.router.navigateByUrl('/').then()
+    }
 }
