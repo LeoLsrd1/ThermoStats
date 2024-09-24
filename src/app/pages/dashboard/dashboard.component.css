@@ -1,0 +1,8 @@
+:host ::ng-deep .p-card .p-card-content {
+  padding: 0;
+}
+
+:host ::ng-deep .p-card .p-card-title {
+  margin: 0 0 24px 0;
+  font-size: 1.25rem;
+}
