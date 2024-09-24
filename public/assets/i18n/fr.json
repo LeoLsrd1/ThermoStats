@@ -8,5 +8,10 @@
   "rain": "Pluie",
   "wind": "Vent",
   "save": "Enregistrer",
-  "week": "Cette semaine"
+  "this-week": "Cette semaine",
+  "chart": "Graphique",
+  "day": "Jour",
+  "week": "Semaine",
+  "month": "Mois",
+  "year": "Année"
 }

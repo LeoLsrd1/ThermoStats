@@ -32,8 +32,10 @@ export class DashboardComponent {
   rain!: number
   wind!: number
   chartData: any
+  chartOptions: any
 
   constructor(private dataService: DataService) {
+    this.chartOptions = this.dataService.chartOptions
     this.getData()
   }
 

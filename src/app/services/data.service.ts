@@ -17,6 +17,29 @@ export type WeatherData = {
 export class DataService {
   private apiUrl = environment.apiUrl
 
+  chartOptions: any = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Temperature (°C) / Wind (km/h)',
+        },
+      },
+      y1: {
+        position: 'right',
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Rain (mm)',
+        },
+        grid: {
+          display: false,
+        },
+      },
+    },
+  }
+
   constructor(private http: HttpClient) {}
 
   getData(): Observable<WeatherData[]> {
@@ -67,20 +90,31 @@ export class DataService {
       labels: data.map((data) => data.date.toLocaleDateString()),
       datasets: [
         {
+          type: 'line',
           label: 'Min Temp',
           data: data.map((data) => data.minTemp),
+          tension: 0.4,
+          yAxisID: 'y',
         },
         {
+          type: 'line',
           label: 'Max Temp',
           data: data.map((data) => data.maxTemp),
+          tension: 0.4,
+          yAxisID: 'y',
         },
         {
+          type: 'bar',
           label: 'Rain',
           data: data.map((data) => data.rain),
+          yAxisID: 'y1',
         },
         {
+          type: 'line',
           label: 'Wind',
           data: data.map((data) => data.wind),
+          tension: 0.4,
+          yAxisID: 'y',
         },
       ],
     }

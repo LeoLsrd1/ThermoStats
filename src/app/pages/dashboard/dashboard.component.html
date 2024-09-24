@@ -1,10 +1,10 @@
 <app-header title="Dashboard"></app-header>
 
 <div class="fullscreen flex flex-column p-2 gap-4">
-  <p-card>
-    <p-chart type="line" [data]="chartData"></p-chart>
+  <p-card routerLink="/chart">
+    <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
   </p-card>
-  <p-card [header]="'week' | translate">
+  <p-card [header]="'this-week' | translate">
     <div class="flex flex-column gap-3 text-xl font-semibold">
       <div class="flex gap-4">
         <div class="flex gap-1 align-items-center">
