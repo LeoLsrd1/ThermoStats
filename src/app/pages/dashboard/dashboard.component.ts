@@ -42,7 +42,7 @@ export class DashboardComponent {
   }
 
   getData() {
-    this.dataService.getData().subscribe((data) => {
+    this.dataService.getLastMonthData().subscribe((data) => {
       this.weatherData = data
       this.chartData = this.dataService.weatherDataToChartData(data, 'day')
     })

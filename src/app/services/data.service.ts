@@ -66,9 +66,27 @@ export class DataService {
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  getLastYearData(): Observable<WeatherData[]> {
+    return this.http
+      .get<WeatherData>(`${this.apiUrl}/lastYear`)
+      .pipe(map((response) => this.dataResponseToWeatherData(response)))
+  }
+
+  getLastMonthData(): Observable<WeatherData[]> {
+    return this.http
+      .get<WeatherData>(`${this.apiUrl}/lastMonth`)
+      .pipe(map((response) => this.dataResponseToWeatherData(response)))
+  }
+
   getLastWeekData(): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData>(`${this.apiUrl}/last7days`)
+      .pipe(map((response) => this.dataResponseToWeatherData(response)))
+  }
+
+  getDataByYear(year: number): Observable<WeatherData[]> {
+    return this.http
+      .get<WeatherData[]>(`${this.apiUrl}/year/${year}`)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
@@ -80,14 +98,9 @@ export class DataService {
   }
 
   postData(data: WeatherData): Observable<any> {
-    const roundIfDefined = (value?: number) =>
-      value !== undefined ? Math.floor(value) : undefined
     const postData = {
+      ...data,
       date: this.dateToString(data.date),
-      minTemp: roundIfDefined(data.minTemp),
-      maxTemp: roundIfDefined(data.maxTemp),
-      rain: roundIfDefined(data.rain),
-      wind: roundIfDefined(data.wind),
     }
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' })
     console.log('Post Data:', postData)
@@ -139,16 +152,16 @@ export class DataService {
           yAxisID: 'y',
         },
         {
-          type: 'bar',
-          label: this.translateService.instant('rain'),
-          data: data.map((data) => data.rain),
-          yAxisID: 'y1',
-        },
-        {
           type: 'line',
           label: this.translateService.instant('wind'),
           data: data.map((data) => data.wind),
           tension: 0.4,
+          yAxisID: 'y',
+        },
+        {
+          type: 'bar',
+          label: this.translateService.instant('rain'),
+          data: data.map((data) => data.rain),
           yAxisID: 'y1',
         },
       ],

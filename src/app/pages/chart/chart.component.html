@@ -8,10 +8,23 @@
       class="h-full w-full"
       height="95%"
     ></p-chart>
-    <p-selectButton
-      [options]="chartSelection"
-      [(ngModel)]="selectedOption"
-      (onChange)="onSelectionchange()"
-    />
+    <div class="w-full flex justify-content-between">
+      <p-button
+        icon="pi pi-arrow-left"
+        [text]="true"
+        (onClick)="onPrevious()"
+      ></p-button>
+      <p-selectButton
+        [options]="chartSelection"
+        [(ngModel)]="selectedOption"
+        (onChange)="onSelectionchange()"
+      />
+      <p-button
+        icon="pi pi-arrow-right"
+        [text]="true"
+        (onClick)="onNext()"
+        [disabled]="selectedYear >= currentYear"
+      ></p-button>
+    </div>
   </div>
 </div>

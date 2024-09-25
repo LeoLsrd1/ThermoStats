@@ -5,6 +5,7 @@ import { ChartModule } from 'primeng/chart'
 import { DataService, WeatherData } from '../../services/data.service'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { FormsModule } from '@angular/forms'
+import { Button } from 'primeng/button'
 
 @Component({
   selector: 'app-chart',
@@ -15,14 +16,17 @@ import { FormsModule } from '@angular/forms'
     ChartModule,
     SelectButtonModule,
     FormsModule,
+    Button,
   ],
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.css',
 })
 export class ChartComponent {
   chartData: WeatherData[] = []
-  monthData: WeatherData[] = []
   yearData: WeatherData[] = []
+
+  currentYear: number = new Date().getFullYear()
+  selectedYear: number = this.currentYear
 
   displayData: any
   chartOptions: any
@@ -41,7 +45,7 @@ export class ChartComponent {
     this.dataService.chartOptions$.subscribe((options) => {
       this.chartOptions = options
     })
-    this.dataService.getData().subscribe((data) => {
+    this.dataService.getLastYearData().subscribe((data) => {
       this.chartData = data
       this.displayData = this.dataService.weatherDataToChartData(
         data,
@@ -61,30 +65,33 @@ export class ChartComponent {
         )
         break
       case 'month':
-        if (this.monthData.length === 0) {
-          this.monthData = this.calculateMonthlyAverages(this.chartData)
-        }
         this.displayData = this.dataService.weatherDataToChartData(
-          this.monthData,
+          this.calculateMonthlyAverages(this.chartData),
           this.selectedOption
         )
         break
       case 'year':
         if (this.yearData.length === 0) {
-          this.yearData = this.calculateYearlyAverages(this.chartData)
+          this.dataService.getData().subscribe((data) => {
+            this.yearData = data
+            this.displayData = this.dataService.weatherDataToChartData(
+              this.calculateYearlyAverages(this.yearData),
+              this.selectedOption
+            )
+          })
+        } else {
+          this.displayData = this.dataService.weatherDataToChartData(
+            this.calculateYearlyAverages(this.yearData),
+            this.selectedOption
+          )
         }
-        this.displayData = this.dataService.weatherDataToChartData(
-          this.yearData,
-          this.selectedOption
-        )
         break
     }
   }
 
   calculateMonthlyAverages(data: WeatherData[]): WeatherData[] {
     const monthlyData: { [key: string]: any } = {}
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+    const oneYearAgo = new Date(this.selectedYear - 1)
 
     // Parcourir chaque entrée et grouper par mois
     data.forEach((entry) => {
@@ -122,7 +129,9 @@ export class ChartComponent {
         maxTemp: monthlyData[month].totalMaxTemp / monthlyData[month].count,
         minTemp: monthlyData[month].totalMinTemp / monthlyData[month].count,
         rain: monthlyData[month].totalRain,
-        wind: monthlyData[month].totalWind / monthlyData[month].count,
+        wind: monthlyData[month].totalWind
+          ? monthlyData[month].totalWind / monthlyData[month].count
+          : undefined,
       })
     }
 
@@ -168,5 +177,21 @@ export class ChartComponent {
     }
 
     return averages
+  }
+
+  onPrevious() {
+    this.selectedYear--
+    this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+      this.chartData = data
+      this.onSelectionchange()
+    })
+  }
+
+  onNext() {
+    this.selectedYear++
+    this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+      this.chartData = data
+      this.onSelectionchange()
+    })
   }
 }
