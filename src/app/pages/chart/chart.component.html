@@ -1,15 +1,17 @@
 <app-header [hasBackButton]="true" [title]="'chart' | translate"> </app-header>
 <div class="fullscreen p-2">
-  <p-chart
-    type="line"
-    [data]="displayData"
-    [options]="chartOptions"
-    class="h-full"
-    height="90%"
-  ></p-chart>
-  <p-selectButton
-    [options]="chartSelection"
-    [(ngModel)]="selectedOption"
-    (onChange)="onSelectionchange()"
-  />
+  <div class="h-full flex flex-column align-items-center">
+    <p-chart
+      type="line"
+      [data]="displayData"
+      [options]="chartOptions"
+      class="h-full w-full"
+      height="95%"
+    ></p-chart>
+    <p-selectButton
+      [options]="chartSelection"
+      [(ngModel)]="selectedOption"
+      (onChange)="onSelectionchange()"
+    />
+  </div>
 </div>

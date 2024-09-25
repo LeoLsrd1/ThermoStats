@@ -21,14 +21,13 @@ import { FormsModule } from '@angular/forms'
 })
 export class ChartComponent {
   chartData: WeatherData[] = []
-  weekData: WeatherData[] = []
   monthData: WeatherData[] = []
   yearData: WeatherData[] = []
 
   displayData: any
   chartOptions: any
   chartSelection: any[] = []
-  selectedOption = 'day'
+  selectedOption: 'day' | 'month' | 'year' = 'day'
 
   constructor(
     private dataService: DataService,
@@ -36,14 +35,18 @@ export class ChartComponent {
   ) {
     this.chartSelection = [
       { label: this.translateService.instant('day'), value: 'day' },
-      { label: this.translateService.instant('week'), value: 'week' },
       { label: this.translateService.instant('month'), value: 'month' },
       { label: this.translateService.instant('year'), value: 'year' },
     ]
-    this.chartOptions = this.dataService.chartOptions
+    this.dataService.chartOptions$.subscribe((options) => {
+      this.chartOptions = options
+    })
     this.dataService.getData().subscribe((data) => {
       this.chartData = data
-      this.displayData = this.dataService.weatherDataToChartData(data)
+      this.displayData = this.dataService.weatherDataToChartData(
+        data,
+        this.selectedOption
+      )
     })
   }
 
@@ -53,15 +56,8 @@ export class ChartComponent {
     switch (this.selectedOption) {
       case 'day':
         this.displayData = this.dataService.weatherDataToChartData(
-          this.chartData
-        )
-        break
-      case 'week':
-        if (this.weekData.length === 0) {
-          this.weekData = this.calculateWeeklyAverages(this.chartData)
-        }
-        this.displayData = this.dataService.weatherDataToChartData(
-          this.weekData
+          this.chartData,
+          this.selectedOption
         )
         break
       case 'month':
@@ -69,7 +65,8 @@ export class ChartComponent {
           this.monthData = this.calculateMonthlyAverages(this.chartData)
         }
         this.displayData = this.dataService.weatherDataToChartData(
-          this.monthData
+          this.monthData,
+          this.selectedOption
         )
         break
       case 'year':
@@ -77,7 +74,8 @@ export class ChartComponent {
           this.yearData = this.calculateYearlyAverages(this.chartData)
         }
         this.displayData = this.dataService.weatherDataToChartData(
-          this.yearData
+          this.yearData,
+          this.selectedOption
         )
         break
     }
@@ -170,71 +168,5 @@ export class ChartComponent {
     }
 
     return averages
-  }
-
-  calculateWeeklyAverages(data: WeatherData[]): WeatherData[] {
-    const weeklyData: { [key: string]: any } = {}
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-
-    // Parcourir chaque entrée et grouper par semaine
-    data.forEach((entry) => {
-      if (entry.date < oneYearAgo) {
-        return
-      }
-      const week = this.getWeekNumber(entry.date)
-
-      // Si la semaine n'existe pas encore, l'initialiser
-      if (!weeklyData[week]) {
-        weeklyData[week] = {
-          totalMaxTemp: 0,
-          totalMinTemp: 0,
-          totalRain: 0,
-          totalWind: 0,
-          count: 0,
-        }
-      }
-
-      // Accumuler les valeurs
-      weeklyData[week].totalMaxTemp += entry.maxTemp
-      weeklyData[week].totalMinTemp += entry.minTemp
-      weeklyData[week].totalRain += entry.rain
-      weeklyData[week].totalWind += entry.wind
-      weeklyData[week].count += 1 // Incrémenter le compteur
-    })
-
-    // Calculer les moyennes
-    const averages: WeatherData[] = []
-    for (const week in weeklyData) {
-      const [year, weekNumber] = week.split('-').map(Number)
-      averages.push({
-        date: this.getDateOfISOWeek(weekNumber, year),
-        maxTemp: weeklyData[week].totalMaxTemp / weeklyData[week].count,
-        minTemp: weeklyData[week].totalMinTemp / weeklyData[week].count,
-        rain: weeklyData[week].totalRain,
-        wind: weeklyData[week].totalWind / weeklyData[week].count,
-      })
-    }
-
-    return averages
-  }
-
-  getWeekNumber(date: Date): string {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
-    const pastDaysOfYear =
-      (date.getTime() - firstDayOfYear.getTime()) / 86400000
-    const weekNumber = Math.ceil(
-      (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
-    )
-    return `${date.getFullYear()}-${weekNumber}`
-  }
-
-  getDateOfISOWeek(week: number, year: number): Date {
-    const simple = new Date(year, 0, 1 + (week - 1) * 7)
-    const dow = simple.getDay()
-    const ISOweekStart = simple
-    if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1)
-    else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay())
-    return ISOweekStart
   }
 }

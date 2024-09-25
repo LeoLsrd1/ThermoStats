@@ -35,14 +35,16 @@ export class DashboardComponent {
   chartOptions: any
 
   constructor(private dataService: DataService) {
-    this.chartOptions = this.dataService.chartOptions
+    this.dataService.chartOptions$.subscribe((options) => {
+      this.chartOptions = options
+    })
     this.getData()
   }
 
   getData() {
     this.dataService.getData().subscribe((data) => {
       this.weatherData = data
-      this.chartData = this.dataService.weatherDataToChartData(data)
+      this.chartData = this.dataService.weatherDataToChartData(data, 'day')
     })
     this.dataService.getLastWeekData().subscribe((data) => {
       this.maxTemp = Math.max(

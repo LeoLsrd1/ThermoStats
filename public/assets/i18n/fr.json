@@ -13,5 +13,7 @@
   "day": "Jour",
   "week": "Semaine",
   "month": "Mois",
-  "year": "Année"
+  "year": "Année",
+  "y-axis": "Température (°C)",
+  "y1-axis": "Pluie (mm) / Vent (km/h)"
 }
