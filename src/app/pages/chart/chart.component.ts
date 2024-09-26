@@ -6,6 +6,7 @@ import { DataService, WeatherData } from '../../services/data.service'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { FormsModule } from '@angular/forms'
 import { Button } from 'primeng/button'
+import { CardModule } from 'primeng/card'
 
 @Component({
   selector: 'app-chart',
@@ -17,6 +18,7 @@ import { Button } from 'primeng/button'
     SelectButtonModule,
     FormsModule,
     Button,
+    CardModule,
   ],
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.css',
@@ -172,7 +174,9 @@ export class ChartComponent {
         maxTemp: yearlyData[year].totalMaxTemp / yearlyData[year].count,
         minTemp: yearlyData[year].totalMinTemp / yearlyData[year].count,
         rain: yearlyData[year].totalRain,
-        wind: yearlyData[year].totalWind / yearlyData[year].count,
+        wind: yearlyData[year].totalWind
+          ? yearlyData[year].totalWind / yearlyData[year].count
+          : undefined,
       })
     }
 

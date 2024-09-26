@@ -1,13 +1,15 @@
 <app-header [hasBackButton]="true" [title]="'chart' | translate"> </app-header>
-<div class="fullscreen p-2">
+<div class="fullscreen p-2 pt-0">
   <div class="h-full flex flex-column align-items-center">
-    <p-chart
-      type="line"
-      [data]="displayData"
-      [options]="chartOptions"
-      class="h-full w-full"
-      height="95%"
-    ></p-chart>
+    <p-card class="w-full h-full mb-3">
+      <p-chart
+        type="line"
+        [data]="displayData"
+        [options]="chartOptions"
+        class="h-full w-full"
+        height="100%"
+      ></p-chart>
+    </p-card>
     <div class="w-full flex justify-content-between">
       <p-button
         icon="pi pi-arrow-left"
