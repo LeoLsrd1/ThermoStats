@@ -47,18 +47,31 @@ export class DashboardComponent {
       this.chartData = this.dataService.weatherDataToChartData(data, 'day')
     })
     this.dataService.getLastWeekData().subscribe((data) => {
-      this.maxTemp = Math.max(
-        ...data.map((data) => data.maxTemp).filter((temp) => temp !== undefined)
+      this.maxTemp = parseFloat(
+        Math.max(
+          ...data
+            .map((data) => data.maxTemp)
+            .filter((temp) => temp !== undefined)
+        ).toFixed(1)
       )
-      this.minTemp = Math.min(
-        ...data.map((data) => data.minTemp).filter((temp) => temp !== undefined)
+      this.minTemp = parseFloat(
+        Math.min(
+          ...data
+            .map((data) => data.minTemp)
+            .filter((temp) => temp !== undefined)
+        ).toFixed(1)
       )
-      this.rain = data
-        .map((data) => data.rain)
-        .filter((rain) => rain !== undefined)
-        .reduce((acc, rain) => acc + rain, 0)
-      this.wind = Math.max(
-        ...data.map((data) => data.wind).filter((wind) => wind !== undefined)
+      this.rain = parseFloat(
+        data
+          .map((data) => data.rain)
+          .filter((rain) => rain !== undefined)
+          .reduce((acc, rain) => acc + rain, 0)
+          .toFixed(1)
+      )
+      this.wind = parseFloat(
+        Math.max(
+          ...data.map((data) => data.wind).filter((wind) => wind !== undefined)
+        ).toFixed(1)
       )
     })
   }

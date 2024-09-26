@@ -1,15 +1,16 @@
 <div
-  class="h-4rem flex justify-between items-center p-2 fixed top-0 left-0 right-0"
+  class="h-4rem flex justify-between items-center p-2 fixed top-0 left-0 right-0 gray"
 >
   @if (hasBackButton) {
-    <p-button
-      class="flex-1"
-      icon="pi pi-chevron-left"
-      [rounded]="true"
-      severity="secondary"
-      [text]="true"
-      (click)="goBack()"
-    />
+    <div class="flex-1">
+      <p-button
+        icon="pi pi-chevron-left"
+        [rounded]="true"
+        severity="secondary"
+        [text]="true"
+        (click)="goBack()"
+      />
+    </div>
   } @else {
     <div class="flex-1"></div>
   }

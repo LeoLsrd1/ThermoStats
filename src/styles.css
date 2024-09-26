@@ -9,6 +9,7 @@ body {
 }
 
 .fullscreen {
+  background-color: #f1f1f1;
   overflow: auto;
   position: fixed;
   top: 4rem;
