@@ -10,23 +10,27 @@
         height="100%"
       ></p-chart>
     </p-card>
-    <div class="w-full flex justify-content-between">
-      <p-button
-        icon="pi pi-arrow-left"
-        [text]="true"
-        (onClick)="onPrevious()"
-      ></p-button>
+    <div class="w-full flex justify-content-around">
+      @if (selectedOption !== 'year') {
+        <p-button
+          icon="pi pi-arrow-left"
+          [text]="true"
+          (onClick)="onPrevious()"
+        ></p-button>
+      }
       <p-selectButton
         [options]="chartSelection"
         [(ngModel)]="selectedOption"
         (onChange)="onSelectionchange()"
       />
-      <p-button
-        icon="pi pi-arrow-right"
-        [text]="true"
-        (onClick)="onNext()"
-        [disabled]="selectedYear >= currentYear"
-      ></p-button>
+      @if (selectedOption !== 'year') {
+        <p-button
+          icon="pi pi-arrow-right"
+          [text]="true"
+          (onClick)="onNext()"
+          [disabled]="isNextDisabled()"
+        ></p-button>
+      }
     </div>
   </div>
 </div>

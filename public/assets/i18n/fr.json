@@ -25,5 +25,6 @@
   "month": "Mois",
   "year": "Année",
   "y-axis": "Température (°C) / Vent (km/h)",
-  "y1-axis": "Pluie (mm)"
+  "y1-axis": "Pluie (mm)",
+  "this-month": "Ce mois-ci"
 }

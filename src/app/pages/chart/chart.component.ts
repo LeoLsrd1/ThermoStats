@@ -27,8 +27,11 @@ export class ChartComponent {
   chartData: WeatherData[] = []
   yearData: WeatherData[] = []
 
-  currentYear: number = new Date().getFullYear()
+  today: Date = new Date()
+  currentMonth: number = this.today.getMonth()
+  currentYear: number = this.today.getFullYear()
   selectedYear: number = this.currentYear
+  selectedMonth: number = this.currentMonth
 
   displayData: any
   chartOptions: any
@@ -49,27 +52,35 @@ export class ChartComponent {
     })
     this.dataService.getLastYearData().subscribe((data) => {
       this.chartData = data
-      this.displayData = this.dataService.weatherDataToChartData(
-        data,
-        this.selectedOption
-      )
+      this.onSelectionchange()
     })
   }
-
-  protected readonly onselectionchange = onselectionchange
 
   onSelectionchange() {
     switch (this.selectedOption) {
       case 'day':
+        const currentMonth = new Date(
+          this.selectedYear,
+          this.selectedMonth + 1,
+          0
+        )
+        const monthStart = new Date(currentMonth)
+        monthStart.setDate(1)
+        console.log(currentMonth, monthStart)
+        const lastMonthData = this.chartData.filter(
+          (entry) => entry.date >= monthStart && entry.date <= currentMonth
+        )
         this.displayData = this.dataService.weatherDataToChartData(
-          this.chartData,
-          this.selectedOption
+          lastMonthData,
+          this.selectedOption,
+          monthStart
         )
         break
       case 'month':
         this.displayData = this.dataService.weatherDataToChartData(
           this.calculateMonthlyAverages(this.chartData),
-          this.selectedOption
+          this.selectedOption,
+          this.selectedYear.toString()
         )
         break
       case 'year':
@@ -93,12 +104,11 @@ export class ChartComponent {
 
   calculateMonthlyAverages(data: WeatherData[]): WeatherData[] {
     const monthlyData: { [key: string]: any } = {}
-    const oneYearAgo = new Date(this.selectedYear - 1)
 
     // Parcourir chaque entrée et grouper par mois
     data.forEach((entry) => {
       const date = entry.date
-      if (date < oneYearAgo) {
+      if (date.getFullYear() < this.selectedYear) {
         return
       }
       const yearMonth = `${date.getFullYear()}-${date.getMonth() + 1}` // Format "YYYY-MM"
@@ -184,18 +194,57 @@ export class ChartComponent {
   }
 
   onPrevious() {
-    this.selectedYear--
-    this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
-      this.chartData = data
-      this.onSelectionchange()
-    })
+    if (this.selectedOption === 'day') {
+      if (this.selectedMonth <= 0) {
+        this.selectedMonth = 11
+        this.selectedYear--
+        this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+          this.chartData = data
+          this.onSelectionchange()
+        })
+      } else {
+        this.selectedMonth--
+        this.onSelectionchange()
+      }
+    } else {
+      this.selectedYear--
+      this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+        this.chartData = data
+        this.onSelectionchange()
+      })
+    }
   }
 
   onNext() {
-    this.selectedYear++
-    this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
-      this.chartData = data
-      this.onSelectionchange()
-    })
+    if (this.selectedOption === 'day') {
+      if (this.selectedMonth === 11) {
+        this.selectedMonth = 0
+        this.selectedYear++
+        this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+          this.chartData = data
+          this.onSelectionchange()
+        })
+      } else {
+        this.selectedMonth++
+        this.onSelectionchange()
+      }
+    } else {
+      this.selectedYear++
+      this.dataService.getDataByYear(this.selectedYear).subscribe((data) => {
+        this.chartData = data
+        this.onSelectionchange()
+      })
+    }
+  }
+
+  isNextDisabled() {
+    if (this.selectedOption === 'day') {
+      return (
+        this.selectedYear >= this.currentYear &&
+        this.selectedMonth >= this.currentMonth
+      )
+    } else {
+      return this.selectedYear >= this.currentYear
+    }
   }
 }

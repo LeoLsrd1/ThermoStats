@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { map, Observable, switchMap } from 'rxjs'
+import { BehaviorSubject, map, Observable, switchMap } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { TranslateService } from '@ngx-translate/core'
 
@@ -19,6 +19,7 @@ export class DataService {
   private apiUrl = environment.apiUrl
 
   chartOptions$: Observable<any>
+  chartTitleSubject = new BehaviorSubject<string>('')
 
   private yAxis!: string
   private y1Axis!: string
@@ -34,6 +35,9 @@ export class DataService {
       }),
       map((y1Axis) => {
         this.y1Axis = y1Axis
+      }),
+      switchMap(() => this.chartTitleSubject),
+      map((chartTitle) => {
         return {
           scales: {
             y: {
@@ -53,6 +57,15 @@ export class DataService {
               grid: {
                 display: false,
               },
+            },
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: true,
+              text: chartTitle,
             },
           },
         }
@@ -118,17 +131,31 @@ export class DataService {
 
   weatherDataToChartData(
     data: WeatherData[],
-    filter: 'day' | 'month' | 'year'
+    filter: 'day' | 'month' | 'year',
+    date: Date | string = ''
   ): any {
+    if (typeof date === 'string') {
+      this.chartTitleSubject.next(date)
+    }
     let labels: string[] = []
     switch (filter) {
       case 'day':
-        labels = data.map((data) => data.date.toLocaleDateString())
+        if (typeof date !== 'string') {
+          this.translateService
+            .get('primeng.monthNames')
+            .subscribe((months) =>
+              this.chartTitleSubject.next(
+                `${months[date.getMonth()]} ${date.getFullYear()}`
+              )
+            )
+        }
+        labels = data.map((data) => data.date.getDate().toString())
         break
       case 'month':
-        labels = data.map(
-          (data) => `${data.date.getFullYear()}-${data.date.getMonth() + 1}`
-        )
+        if (typeof date !== 'string') {
+          this.chartTitleSubject.next(date.getFullYear().toString())
+        }
+        labels = data.map((data) => (data.date.getMonth() + 1).toString())
         break
       case 'year':
         labels = data.map((data) => data.date.getFullYear().toString())

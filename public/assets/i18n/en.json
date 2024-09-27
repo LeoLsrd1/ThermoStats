@@ -25,5 +25,6 @@
   "month": "Month",
   "year": "Year",
   "y-axis": "Temperature (°C) / Wind (km/h)",
-  "y1-axis": "Rain (mm)"
+  "y1-axis": "Rain (mm)",
+  "this-month": "This month"
 }

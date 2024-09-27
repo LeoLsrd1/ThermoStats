@@ -3,8 +3,8 @@ import { RouterOutlet } from '@angular/router'
 import { DashboardComponent } from './pages/dashboard/dashboard.component'
 import { TranslateService } from '@ngx-translate/core'
 import { PrimeNGConfig } from 'primeng/api'
-import { SwUpdate } from '@angular/service-worker'
-import { map, switchMap } from 'rxjs'
+import { SwUpdate, VersionEvent } from '@angular/service-worker'
+import { map, of, switchMap } from 'rxjs'
 
 @Component({
   selector: 'app-root',
@@ -22,14 +22,24 @@ export class AppComponent implements OnInit {
     private swUpdate: SwUpdate
   ) {
     if (this.swUpdate.isEnabled) {
-      this.swUpdate.versionUpdates.pipe(
-        switchMap(() => this.translateService.get('update')),
-        map((updateMessage) => {
-          if (confirm(updateMessage)) {
-            window.location.reload()
-          }
-        })
-      )
+      this.swUpdate.versionUpdates
+        .pipe(
+          switchMap((event: VersionEvent) => {
+            if (event.type === 'VERSION_READY') {
+              return this.translateService.get('update')
+            } else {
+              return of('')
+            }
+          }),
+          map((updateMessage) => {
+            if (updateMessage !== '') {
+              if (confirm(updateMessage)) {
+                window.location.reload()
+              }
+            }
+          })
+        )
+        .subscribe()
     }
   }
 

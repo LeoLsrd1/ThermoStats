@@ -5,9 +5,10 @@ import { RouterLink } from '@angular/router'
 import { DataService, WeatherData } from '../../services/data.service'
 import { CardModule } from 'primeng/card'
 import { ChartModule } from 'primeng/chart'
-import { TranslateModule } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { StyleClassModule } from 'primeng/styleclass'
 import { NgOptimizedImage } from '@angular/common'
+import { map, switchMap } from 'rxjs'
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +35,10 @@ export class DashboardComponent {
   chartData: any
   chartOptions: any
 
-  constructor(private dataService: DataService) {
+  constructor(
+    private dataService: DataService,
+    private translateService: TranslateService
+  ) {
     this.dataService.chartOptions$.subscribe((options) => {
       this.chartOptions = options
     })
@@ -42,10 +46,23 @@ export class DashboardComponent {
   }
 
   getData() {
-    this.dataService.getLastMonthData().subscribe((data) => {
-      this.weatherData = data
-      this.chartData = this.dataService.weatherDataToChartData(data, 'day')
-    })
+    this.dataService
+      .getLastMonthData()
+      .pipe(
+        switchMap((data) =>
+          this.translateService
+            .get('this-month')
+            .pipe(map((title) => ({ title, data })))
+        )
+      )
+      .subscribe(({ title, data }) => {
+        this.weatherData = data
+        this.chartData = this.dataService.weatherDataToChartData(
+          data,
+          'day',
+          title
+        )
+      })
     this.dataService.getLastWeekData().subscribe((data) => {
       this.maxTemp = parseFloat(
         Math.max(
