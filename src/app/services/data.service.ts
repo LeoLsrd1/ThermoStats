@@ -4,6 +4,9 @@ import { BehaviorSubject, map, Observable, switchMap } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { TranslateService } from '@ngx-translate/core'
 
+/**
+ * Type definition for weather data.
+ */
 export type WeatherData = {
   date: Date
   minTemp?: number
@@ -18,7 +21,9 @@ export type WeatherData = {
 export class DataService {
   private apiUrl = environment.apiUrl
 
+  /** Observable for chart options. */
   chartOptions$: Observable<any>
+  /** Subject for chart title. */
   chartTitleSubject = new BehaviorSubject<string>('')
 
   private yAxis!: string
@@ -73,36 +78,62 @@ export class DataService {
     )
   }
 
+  /**
+   * Fetches weather data.
+   * @returns Observable of WeatherData array.
+   */
   getData(): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData[]>(this.apiUrl)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Fetches weather data for the last year.
+   * @returns Observable of WeatherData array.
+   */
   getLastYearData(): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData>(`${this.apiUrl}/lastYear`)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Fetches weather data for the last month.
+   * @returns Observable of WeatherData array.
+   */
   getLastMonthData(): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData>(`${this.apiUrl}/lastMonth`)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Fetches weather data for the last week.
+   * @returns Observable of WeatherData array.
+   */
   getLastWeekData(): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData>(`${this.apiUrl}/last7days`)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Fetches weather data for a specific year.
+   * @param year - The year for which to fetch data.
+   * @returns Observable of WeatherData array.
+   */
   getDataByYear(year: number): Observable<WeatherData[]> {
     return this.http
       .get<WeatherData[]>(`${this.apiUrl}/year/${year}`)
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Fetches weather data for a specific date.
+   * @param date - The date for which to fetch data.
+   * @returns Observable of WeatherData array.
+   */
   getDataByDate(date: Date): Observable<WeatherData[]> {
     const selectedDate = this.dateToString(date) // Formate la date en 'YYYY-MM-DD'
     return this.http
@@ -110,6 +141,11 @@ export class DataService {
       .pipe(map((response) => this.dataResponseToWeatherData(response)))
   }
 
+  /**
+   * Posts weather data.
+   * @param data - The weather data to post.
+   * @returns Observable of the HTTP response.
+   */
   postData(data: WeatherData): Observable<any> {
     const postData = {
       ...data,
@@ -120,6 +156,11 @@ export class DataService {
     return this.http.post<any>(this.apiUrl, postData, { headers })
   }
 
+  /**
+   * Converts the API response to WeatherData array.
+   * @param response - The API response.
+   * @returns Array of WeatherData.
+   */
   private dataResponseToWeatherData(response: any): WeatherData[] {
     return response.map((data: any) => {
       return {
@@ -129,31 +170,38 @@ export class DataService {
     })
   }
 
+  /**
+   * Converts weather data to chart data.
+   * @param data - The weather data.
+   * @param filter - The filter type ('day', 'month', 'year').
+   * @param title - The date or string for the chart title.
+   * @returns Chart data object.
+   */
   weatherDataToChartData(
     data: WeatherData[],
     filter: 'day' | 'month' | 'year',
-    date: Date | string = ''
+    title: Date | string = ''
   ): any {
-    if (typeof date === 'string') {
-      this.chartTitleSubject.next(date)
+    if (typeof title === 'string') {
+      this.chartTitleSubject.next(title)
     }
     let labels: string[] = []
     switch (filter) {
       case 'day':
-        if (typeof date !== 'string') {
+        if (typeof title !== 'string') {
           this.translateService
             .get('primeng.monthNames')
             .subscribe((months) =>
               this.chartTitleSubject.next(
-                `${months[date.getMonth()]} ${date.getFullYear()}`
+                `${months[title.getMonth()]} ${title.getFullYear()}`
               )
             )
         }
         labels = data.map((data) => data.date.getDate().toString())
         break
       case 'month':
-        if (typeof date !== 'string') {
-          this.chartTitleSubject.next(date.getFullYear().toString())
+        if (typeof title !== 'string') {
+          this.chartTitleSubject.next(title.getFullYear().toString())
         }
         labels = data.map((data) => (data.date.getMonth() + 1).toString())
         break
@@ -195,6 +243,11 @@ export class DataService {
     }
   }
 
+  /**
+   * Converts a Date object to a string in 'YYYY-MM-DD' format.
+   * @param date - The date to convert.
+   * @returns The formatted date string.
+   */
   private dateToString(date: Date): string {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   }
