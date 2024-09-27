@@ -8,6 +8,7 @@
     "firstDayOfWeek": 1,
     "dateFormat": "mm/dd/yy"
   },
+  "update": "New version available. Reload the page ?",
   "dashboard": "Dashboard",
   "add": "Add",
   "date": "Date",

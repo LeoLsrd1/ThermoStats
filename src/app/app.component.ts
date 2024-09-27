@@ -3,6 +3,8 @@ import { RouterOutlet } from '@angular/router'
 import { DashboardComponent } from './pages/dashboard/dashboard.component'
 import { TranslateService } from '@ngx-translate/core'
 import { PrimeNGConfig } from 'primeng/api'
+import { SwUpdate } from '@angular/service-worker'
+import { map, switchMap } from 'rxjs'
 
 @Component({
   selector: 'app-root',
@@ -16,8 +18,20 @@ export class AppComponent implements OnInit {
 
   constructor(
     private translateService: TranslateService,
-    private config: PrimeNGConfig
-  ) {}
+    private config: PrimeNGConfig,
+    private swUpdate: SwUpdate
+  ) {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates.pipe(
+        switchMap(() => this.translateService.get('update')),
+        map((updateMessage) => {
+          if (confirm(updateMessage)) {
+            window.location.reload()
+          }
+        })
+      )
+    }
+  }
 
   ngOnInit() {
     this.setSystemLanguage()
