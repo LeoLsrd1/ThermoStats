@@ -24,7 +24,7 @@
         class="w-full mb-1"
         [placeholder]="'min' | translate"
         [(ngModel)]="minTemp"
-        inputmode="numeric"
+        inputmode="decimal"
         [pKeyFilter]="'num'"
       />
       <input
@@ -33,7 +33,7 @@
         class="w-full"
         [placeholder]="'max' | translate"
         [(ngModel)]="maxTemp"
-        inputmode="numeric"
+        inputmode="decimal"
         [pKeyFilter]="'num'"
       />
     </div>
@@ -47,7 +47,7 @@
         type="number"
         class="w-full"
         [(ngModel)]="rain"
-        inputmode="numeric"
+        inputmode="decimal"
         [pKeyFilter]="'num'"
       />
     </div>
@@ -61,7 +61,7 @@
         type="number"
         class="w-full"
         [(ngModel)]="wind"
-        inputmode="numeric"
+        inputmode="decimal"
         [pKeyFilter]="'num'"
       />
     </div>
