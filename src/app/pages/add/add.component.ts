@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { DataService } from '../../services/data.service'
 import { catchError, of } from 'rxjs'
+import { ToggleButtonModule } from 'primeng/togglebutton'
 
 @Component({
   selector: 'app-add',
@@ -19,11 +20,14 @@ import { catchError, of } from 'rxjs'
     KeyFilterModule,
     CalendarModule,
     FormsModule,
+    ToggleButtonModule,
   ],
   templateUrl: './add.component.html',
   styleUrl: './add.component.css',
 })
 export class AddComponent {
+  inputRegex: RegExp = /^-?\d+([.,]\d+)?$/
+
   today: Date = new Date()
   date: Date = new Date()
   minTemp: number | undefined
@@ -33,6 +37,9 @@ export class AddComponent {
 
   loading: boolean = false
   hasError: boolean = false
+
+  isMinTempNegative: boolean = false
+  isMaxTempNegative: boolean = false
 
   constructor(
     private router: Router,
@@ -84,5 +91,33 @@ export class AddComponent {
           return of(null)
         })
       )
+  }
+
+  toggleNegative(type: 'min' | 'max') {
+    if (type === 'min') {
+      this.minTemp = this.isMinTempNegative
+        ? -Math.abs(this.minTemp || 0)
+        : Math.abs(this.minTemp || 0)
+    } else if (type === 'max') {
+      this.maxTemp = this.isMaxTempNegative
+        ? -Math.abs(this.maxTemp || 0)
+        : Math.abs(this.maxTemp || 0)
+    }
+  }
+
+  onTempChange(type: 'min' | 'max') {
+    if (type === 'min' && this.minTemp !== undefined) {
+      if (this.isMinTempNegative) {
+        this.minTemp = -Math.abs(parseFloat(this.minTemp.toString()))
+      } else {
+        this.minTemp = Math.abs(parseFloat(this.minTemp.toString()))
+      }
+    } else if (type === 'max' && this.maxTemp !== undefined) {
+      if (this.isMaxTempNegative) {
+        this.maxTemp = -Math.abs(parseFloat(this.maxTemp.toString()))
+      } else {
+        this.maxTemp = Math.abs(parseFloat(this.maxTemp.toString()))
+      }
+    }
   }
 }
