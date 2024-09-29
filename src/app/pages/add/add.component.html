@@ -1,6 +1,6 @@
 <app-header [hasBackButton]="true" [title]="'add' | translate"></app-header>
-<div class="fullscreen flex flex-column justify-content-between">
-  <div class="flex flex-column p-2">
+<div class="fullscreen flex flex-column justify-content-between p-2">
+  <div class="flex flex-column">
     <div class="flex-auto mb-4">
       <label class="font-bold block mb-2">
         {{ 'date' | translate }}
@@ -84,11 +84,13 @@
       />
     </div>
   </div>
-  <p-button
-    class="m-2"
-    [label]="'save' | translate"
-    [style]="{ width: '100%' }"
-    (click)="save()"
-    [disabled]="loading"
-  />
+  <div class="mb-1">
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+    <p-button
+      [label]="'save' | translate"
+      [style]="{ width: '100%' }"
+      (click)="save()"
+      [disabled]="loading"
+    />
+  </div>
 </div>

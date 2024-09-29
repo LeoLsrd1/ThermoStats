@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { HeaderComponent } from '../../shared/components/header/header.component'
-import { TranslateModule } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { InputTextModule } from 'primeng/inputtext'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { CalendarModule } from 'primeng/calendar'
@@ -9,6 +9,8 @@ import { Router } from '@angular/router'
 import { DataService } from '../../services/data.service'
 import { catchError, of } from 'rxjs'
 import { ToggleButtonModule } from 'primeng/togglebutton'
+import { Message } from 'primeng/api'
+import { MessagesModule } from 'primeng/messages'
 
 @Component({
   selector: 'app-add',
@@ -21,6 +23,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton'
     CalendarModule,
     FormsModule,
     ToggleButtonModule,
+    MessagesModule,
   ],
   templateUrl: './add.component.html',
   styleUrl: './add.component.css',
@@ -38,12 +41,15 @@ export class AddComponent {
   loading: boolean = false
   hasError: boolean = false
 
+  messages: Message[] = []
+
   isMinTempNegative: boolean = false
   isMaxTempNegative: boolean = false
 
   constructor(
     private router: Router,
-    private dataService: DataService
+    private dataService: DataService,
+    private translateService: TranslateService
   ) {
     this.getDateData()
   }
@@ -88,6 +94,12 @@ export class AddComponent {
           this.hasError = true
           this.loading = false
           console.error('Error:', error)
+          this.messages = [
+            {
+              severity: 'error',
+              summary: this.translateService.instant('error'),
+            },
+          ]
           return of(null)
         })
       )

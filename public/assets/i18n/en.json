@@ -26,5 +26,6 @@
   "year": "Year",
   "y-axis": "Temperature (°C) / Wind (km/h)",
   "y1-axis": "Rain (mm)",
-  "this-month": "This month"
+  "this-month": "This month",
+  "error": "An error occurred, please try again later"
 }
