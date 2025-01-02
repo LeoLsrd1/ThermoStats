@@ -41,26 +41,33 @@ export class PushNotificationService {
       return
     }
 
-    this.swPush
-      .requestSubscription({
-        serverPublicKey: this.VAPID_PUBLIC_KEY,
-      })
-      .then((subscription) => {
-        console.log('Subscription successful!', subscription)
+    this.swPush.subscription.subscribe((subscription) => {
+      if (subscription) {
+        console.log('User is already subscribed')
+        return
+      }
 
-        // Send the subscription to the backend
-        this.sendSubscriptionToServer(subscription).subscribe(
-          () => console.log('Subscription sent to the server successfully.'),
-          (error) =>
-            console.error(
-              'Error while sending subscription to the server:',
-              error
-            )
-        )
-      })
-      .catch((err) => {
-        console.error('Error during push notification subscription:', err)
-      })
+      this.swPush
+        .requestSubscription({
+          serverPublicKey: this.VAPID_PUBLIC_KEY,
+        })
+        .then((subscription) => {
+          console.log('Subscription successful!', subscription)
+
+          // Envoyer l'abonnement au backend
+          this.sendSubscriptionToServer(subscription).subscribe(
+            () => console.log('Subscription sent to the server successfully.'),
+            (error) =>
+              console.error(
+                'Error while sending subscription to the server:',
+                error
+              )
+          )
+        })
+        .catch((err) => {
+          console.error('Error during push notification subscription:', err)
+        })
+    })
   }
 
   /**
@@ -84,11 +91,20 @@ export class PushNotificationService {
 
     this.swPush.messages.subscribe((message) => {
       console.log('Push notification received:', message)
+      this.showNotification(message)
     })
 
     this.swPush.notificationClicks.subscribe((event) => {
       console.log('Notification clicked:', event.notification)
-      // Navigate or perform another action if necessary
     })
+  }
+
+  private showNotification(message: any): void {
+    const title = message.title || 'Thermostats'
+    const options = {
+      body: message.body || 'Psst',
+      icon: message.icon || '/icons/apple-touch-icon-152x152.png',
+    }
+    new Notification(title, options)
   }
 }

@@ -28,10 +28,10 @@ import { map, switchMap } from 'rxjs'
 })
 export class DashboardComponent {
   weatherData: WeatherData[] = []
-  maxTemp!: number
-  minTemp!: number
-  rain!: number
-  wind!: number
+  maxTemp?: number
+  minTemp?: number
+  rain?: number
+  wind?: number
   chartData: any
   chartOptions: any
 
@@ -64,6 +64,9 @@ export class DashboardComponent {
         )
       })
     this.dataService.getLastWeekData().subscribe((data) => {
+      if (data.length === 0) {
+        return
+      }
       this.maxTemp = parseFloat(
         Math.max(
           ...data

@@ -1,19 +1,31 @@
 self.addEventListener('push', function (event) {
-  const data = event.data.json(); // Le payload envoyé par le serveur
+  console.log('Push received', event);
 
-  const title = data.title || 'Notification';
+  let data;
+  try {
+    data = event.data.json();
+  } catch (e) {
+    console.error('Error parsing push data:', e);
+    return;
+  }
+
+  const title = data.title || 'Thermostats';
   const options = {
-    body: data.body || 'Vous avez une nouvelle notification.',
-    icon: '/icons/apple-touch-icon-152x152.png',
+    body: data.body || 'Psst',
+    icon: data.icon || '/icons/apple-touch-icon-152x152.png',
+    badge: data.badge || '/icons/apple-touch-icon-152x152.png',
+    data: data.url || '/'
   };
 
-  // Afficher la notification
-  event.waitUntil(self.registration.showNotification(title, options));
+  console.log('Push received', title, options);
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
 });
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow('/')
+    clients.openWindow(event.notification.data)
   );
 });
