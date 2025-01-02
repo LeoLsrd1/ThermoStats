@@ -70,7 +70,7 @@ Example:
 ```typescript
 export const environment = {
 production: false,
-apiUrl: 'http://your-backend-server-url/api/data'  // Replace with your server API
+apiUrl: 'http://your-backend-server-url/api'  // Replace with your server API
 };
 ```
 This apiUrl must connect to a server that provides the following API endpoints:

@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { PrimeNGConfig } from 'primeng/api'
 import { SwUpdate, VersionEvent } from '@angular/service-worker'
 import { map, of, switchMap } from 'rxjs'
+import { PushNotificationService } from './services/push-notification.service'
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private config: PrimeNGConfig,
-    private swUpdate: SwUpdate
+    private swUpdate: SwUpdate,
+    private pushNotificationService: PushNotificationService
   ) {
     if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates
@@ -45,6 +47,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.setSystemLanguage()
+    this.pushNotificationService.subscribeToNotifications()
+    this.pushNotificationService.listenToPushNotifications()
   }
 
   setSystemLanguage() {

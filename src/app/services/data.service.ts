@@ -19,7 +19,7 @@ export type WeatherData = {
   providedIn: 'root',
 })
 export class DataService {
-  private apiUrl = environment.apiUrl
+  private apiUrl = environment.apiUrl + '/data'
 
   /** Observable for chart options. */
   chartOptions$: Observable<any>
