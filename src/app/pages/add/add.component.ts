@@ -94,12 +94,21 @@ export class AddComponent {
           this.hasError = true
           this.loading = false
           console.error('Error:', error)
-          this.messages = [
-            {
-              severity: 'error',
-              summary: this.translateService.instant('error'),
-            },
-          ]
+          if (error.status === 400 && error.error?.message) {
+            this.messages = [
+              {
+                severity: 'error',
+                summary: error.error.message,
+              },
+            ]
+          } else {
+            this.messages = [
+              {
+                severity: 'error',
+                summary: this.translateService.instant('error'),
+              },
+            ]
+          }
           return of(null)
         })
       )
